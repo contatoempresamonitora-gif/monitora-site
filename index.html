@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitorá - Acompanhe seu concurso</title>
+  <style>
+    /* Reset simples */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f2f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #1a73e8;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #1a73e8;
+      outline: none;
+    }
+
+    button {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: #1a73e8;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #155ab6;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+
+    .error {
+      margin-top: 15px;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Monitorá</h1>
+    <form id="monitorForm">
+      <input type="text" name="nome" placeholder="Digite o nome que deseja monitorar" required>
+      <input type="text" name="whatsapp" placeholder="Digite seu WhatsApp (ex: +55XXXXXXXXXXX)" required>
+      <button type="submit">Cadastrar</button>
+      <div id="message"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('monitorForm');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      messageDiv.textContent = '';
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('https://monitora.app.n8n.cloud/webhook/550fc6ee-56ad-4876-a8c1-48dbc09cbf49', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          messageDiv.textContent = 'Cadastro realizado com sucesso! Você receberá notificações no WhatsApp.';
+          messageDiv.className = 'success';
+          form.reset();
+        } else {
+          messageDiv.textContent = 'Erro ao cadastrar. Tente novamente.';
+          messageDiv.className = 'error';
+        }
+      } catch (error) {
+        messageDiv.textContent = 'Erro de conexão. Verifique sua internet.';
+        messageDiv.className = 'error';
+      }
+    });
+  </script>
+</body>
+</html>
